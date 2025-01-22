@@ -1,8 +1,8 @@
-# 自定义回调：逐轮保存 loss 和最佳模型的 epoch
 import numpy as np
 import tensorflow as tf
-from keras.callbacks import Callback
 from matplotlib import pyplot as plt
+import os
+from tensorflow.keras.callbacks import Callback
 
 
 class LossAndCheckpointLogger(Callback):
@@ -13,21 +13,35 @@ class LossAndCheckpointLogger(Callback):
         self.best_val_loss = float('inf')
         self.best_epoch = None
 
+        # 初始化日志文件
+        if not os.path.exists(self.log_file):
+            with open(self.log_file, "w") as file:
+                file.write("Epoch,Loss,Val Loss\n")
+
     def on_epoch_end(self, epoch, logs=None):
         logs = logs or {}
         current_loss = logs.get('loss', None)
         current_val_loss = logs.get('val_loss', None)
 
-        # 记录当前 loss 和 val_loss
+        # 追加日志
         with open(self.log_file, "a") as file:
-            file.write(f"Epoch {epoch + 1}, Loss: {current_loss}, Val Loss: {current_val_loss}\n")
+            file.write(f"{epoch + 1},{current_loss},{current_val_loss}\n")
 
-        # 如果 val_loss 更好，更新最佳模型信息
+        # 更新最佳模型
         if current_val_loss and current_val_loss < self.best_val_loss:
             self.best_val_loss = current_val_loss
             self.best_epoch = epoch + 1
-            with open(self.checkpoint_file, "a") as file:
-                file.write(f"Best Model at Epoch {self.best_epoch}, Val Loss: {self.best_val_loss}\n")
+            with open(self.checkpoint_file, "a") as ckpt_file:
+                ckpt_file.write(f"Best Model at Epoch {self.best_epoch}, Val Loss: {self.best_val_loss}\n")
+
+
+    def on_train_end(self, logs=None):
+        """
+        训练结束时输出总结信息。
+        """
+        if self.best_epoch is not None:
+            print(f"Training finished! Best model at epoch {self.best_epoch} with Val Loss: {self.best_val_loss:.6f}")
+
 
 
 def setup_gpu():
