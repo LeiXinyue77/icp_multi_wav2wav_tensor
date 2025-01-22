@@ -4,8 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from generate import DataGenerator
 from model.unet import unet
-from train import setup_gpu
-
+from helpers import setup_gpu
 
 if __name__ == "__main__":
     # 初始化 GPU 设置

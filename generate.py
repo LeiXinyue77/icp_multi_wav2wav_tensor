@@ -73,7 +73,7 @@ class DataGenerator(tf.keras.utils.Sequence):
                 normalized_data = (npy_data - npy_data_min) / npy_data_range
 
                 # Append ICP (y) and ABP (x)
-                x_batch.append(normalized_data[:, 1].reshape(-1, 1, 1))  # ABP
+                x_batch.append(normalized_data[:, 1:3].reshape(-1, 1, 1))  # ABP
                 y_batch.append(normalized_data[:, 0].reshape(-1, 1, 1))  # ICP
 
                 # Add file info for test mode
