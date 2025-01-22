@@ -1,6 +1,8 @@
 # 自定义回调：逐轮保存 loss 和最佳模型的 epoch
+import numpy as np
 import tensorflow as tf
 from keras.callbacks import Callback
+from matplotlib import pyplot as plt
 
 
 class LossAndCheckpointLogger(Callback):
@@ -39,3 +41,53 @@ def setup_gpu():
             print(f"GPU setup error: {e}")
     else:
         print("No GPU found. Using CPU.")
+
+
+def plot_signals(abp, ppg, ecg, icp, file_info, idx):
+    """
+    Plot multi-channel signals and the corresponding ICP target.
+    """
+    time = np.arange(0, abp.shape[0] * 0.008, 0.008)  # Assume 0.008s per time step
+
+    plt.figure(figsize=(12, 10))
+
+    # ABP Signal
+    plt.subplot(4, 1, 1)
+    plt.plot(time, abp, label="ABP", color='g')
+    plt.title("ABP Signal", fontsize=16)
+    plt.xlabel("Time (s)", fontsize=12)
+    plt.ylabel("Normalized Value", fontsize=12)
+    plt.grid()
+    plt.legend()
+
+    # PPG Signal
+    plt.subplot(4, 1, 2)
+    plt.plot(time, ppg, label="PPG", color='m')
+    plt.title("PPG Signal", fontsize=16)
+    plt.xlabel("Time (s)", fontsize=12)
+    plt.ylabel("Normalized Value", fontsize=12)
+    plt.grid()
+    plt.legend()
+
+    # ECG Signal
+    plt.subplot(4, 1, 3)
+    plt.plot(time, ecg, label="ECG", color='c')
+    plt.title("ECG Signal", fontsize=16)
+    plt.xlabel("Time (s)", fontsize=12)
+    plt.ylabel("Normalized Value", fontsize=12)
+    plt.grid()
+    plt.legend()
+
+    # ICP Signal
+    plt.subplot(4, 1, 4)
+    plt.plot(time, icp, label="ICP (Target)", color='b')
+    plt.title("ICP Signal", fontsize=16)
+    plt.xlabel("Time (s)", fontsize=12)
+    plt.ylabel("Normalized Value", fontsize=12)
+    plt.grid()
+    plt.legend()
+
+    plt.tight_layout()
+    # plt.savefig(f"test_signal_plot_{idx}.png", dpi=300)
+    plt.show()
+    print(f"Plot saved for sample {idx} - File info: {file_info}")
