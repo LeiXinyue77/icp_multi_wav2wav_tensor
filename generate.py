@@ -25,14 +25,12 @@ class DataGenerator(tf.keras.utils.Sequence):
                         self.file_paths.append(os.path.join(root, file))
 
         self.mode = mode
-        self.shuffle = shuffle and mode == 'train'  # Shuffle only for train mode
-
         # Sort file paths for consistency
         self.file_paths = sorted(self.file_paths)
 
         # Set random seed for reproducibility
         np.random.seed(seed)
-        if self.shuffle:
+        if self.mode == 'train' or self.mode == 'val':
             np.random.shuffle(self.file_paths)
 
         # Handle mode-specific file selection
@@ -48,6 +46,7 @@ class DataGenerator(tf.keras.utils.Sequence):
             raise ValueError("Invalid mode. Use 'train', 'val', or 'test'.")
 
         self.batch_size = batch_size
+        self.shuffle = shuffle and mode == 'train'  # Shuffle only for train mode
         self.on_epoch_end()
 
     def __len__(self):

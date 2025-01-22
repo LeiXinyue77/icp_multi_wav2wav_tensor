@@ -45,7 +45,7 @@ if __name__ == "__main__":
                     metrics=tf.keras.metrics.RootMeanSquaredError())
 
     # Model checkpoint
-    checkpoint_save_path = f"./20250121_checkpoint5_{fold_no}/unet_icp.ckpt"
+    checkpoint_save_path = f"./20250122_checkpoint5_{fold_no}/unet_icp.ckpt"
     if os.path.exists(checkpoint_save_path + '.index'):
         print('-------------load the model-----------------')
         myModel.load_weights(checkpoint_save_path)
@@ -59,7 +59,7 @@ if __name__ == "__main__":
         history = myModel.fit(
             train_gen,
             validation_data=val_gen,
-            epochs=100,
+            epochs=150,
             verbose=1,
             callbacks=[cp_callback]
         )
@@ -71,10 +71,10 @@ if __name__ == "__main__":
     try:
         loss = history.history['loss']
         val_loss = history.history['val_loss']
-        np_loss = np.array(loss).reshape((len(loss), 1))  # reshape是为了能够跟别的信息组成矩阵一起存储
+        np_loss = np.array(loss).reshape((len(loss), 1))
         np_val_loss = np.array(val_loss).reshape((len(val_loss), 1))
         np_out = np.concatenate([np_loss, np_val_loss], axis=1)
-        f = "2025_save_loss_1.txt"
+        f = "20250122_save_loss_1.txt"
         mytime = datetime.datetime.now()
         with open(f, "a") as file:
             file.write(str(mytime) + "\n")
@@ -89,7 +89,7 @@ if __name__ == "__main__":
         plt.xlabel('Epoch', fontsize=18)
         plt.ylabel('Loss', fontsize=18)
         plt.legend()
-        plt.savefig(f'20250121_Training_and_Validation_Loss_{fold_no}.png', dpi=600)
+        plt.savefig(f'20250122_Training_and_Validation_Loss_{fold_no}.png', dpi=600)
         print("Loss plots saved successfully!")
     except Exception as e:
         print(f"Error during saving or plotting: {e}")

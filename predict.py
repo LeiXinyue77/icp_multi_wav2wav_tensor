@@ -26,7 +26,7 @@ if __name__ == "__main__":
     myModel = unet()
 
     # 加载训练好的模型权重
-    checkpoint_save_path = "./20250121_checkpoint5_1/unet_icp.ckpt"
+    checkpoint_save_path = "./20250122_checkpoint5_1/unet_icp.ckpt"
     if os.path.exists(checkpoint_save_path + '.index'):
         print('-------------load the model-----------------')
         myModel.load_weights(checkpoint_save_path)
@@ -60,19 +60,19 @@ if __name__ == "__main__":
     x_data = x_data.reshape(x_data.shape[0], x_data.shape[1])
 
     # 保存预测结果为 MAT 文件
-    pred_icp_file = "20250121_pred_icp_1.mat"
+    pred_icp_file = "20250122_pred_icp_1.mat"
     io.savemat(pred_icp_file, {'pred_icp_1': y_pred})
     print(f"saved to {pred_icp_file}")
 
-    refer_icp_file = "20250121_refer_icp_1.mat"
+    refer_icp_file = "20250122_refer_icp_1.mat"
     io.savemat(refer_icp_file, {'refer_icp_1': y_refer})
     print(f"saved to {refer_icp_file}")
 
-    abp_mat_file = "20250121_abp_1.mat"
+    abp_mat_file = "20250122_abp_1.mat"
     io.savemat(abp_mat_file, {'abp_1': x_data})
     print(f"saved to {abp_mat_file}")
 
-    info_mat_file = "20250121_info_1.mat"
+    info_mat_file = "20250122_info_1.mat"
     io.savemat(info_mat_file, {'info_1': infos})
     print(f"saved to {info_mat_file}")
 
