@@ -50,8 +50,9 @@ def plot_results(refer_icp, pred_icp, abp, ppg, ecg, info, idx):
 
     plt.tight_layout()
     plt.savefig(f"result_plot_{idx}.png", dpi=300)
-    plt.show()
+    plt.close()  # 保存后关闭图像
     print(f"Plot saved for sample {idx} - Info: {info}")
+
 
 if __name__ == "__main__":
     pred_icp_file = "20250122_pred_icp_1.mat"
@@ -70,14 +71,14 @@ if __name__ == "__main__":
     data = io.loadmat(info_mat_file)
     infos = data['info_1']
 
-    # 遍历测试数据并绘制图像
-    for i in range(len(infos)):
-        refer_icp = refer_icps[i+20000]
-        pred_icp = pred_icps[i+20000]
-        abp = abps[i+20000]
-        ppg = np.zeros_like(abp)         # 使用占位符数据模拟 PPG（可替换为实际数据）
-        ecg = np.zeros_like(abp)         # 使用占位符数据模拟 ECG（可替换为实际数据）
-        plot_results(refer_icp, pred_icp, abp, ppg, ecg, infos[i+20000], i+20000)
-        print(f"{infos[i+20000]}")
+    # 遍历测试数据并绘制前 5 张图像
+    max_plots = 5
+    for i in range(min(len(infos), max_plots)):  # 限制最多绘制 max_plots 张图像
+        refer_icp = refer_icps[i]
+        pred_icp = pred_icps[i]
+        abp = abps[i]
+        ppg = np.zeros_like(abp)  # 使用占位符数据模拟 PPG（可替换为实际数据）
+        ecg = np.zeros_like(abp)  # 使用占位符数据模拟 ECG（可替换为实际数据）
+        plot_results(refer_icp, pred_icp, abp, ppg, ecg, infos[i], i)
 
 
