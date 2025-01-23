@@ -5,7 +5,7 @@ from helpers import plot_signals
 
 
 class DataGenerator(tf.keras.utils.Sequence):
-    def __init__(self, folders, root_dir, batch_size=32, shuffle=True, split_ratio=0.8, mode='train', seed=42):
+    def __init__(self, folders, root_dir, batch_size=32, shuffle=True, mode='train', seed=42):
         """
         Args:
             folders (list): List of folders containing the `.npy` files.
@@ -30,20 +30,21 @@ class DataGenerator(tf.keras.utils.Sequence):
 
         # Set random seed for reproducibility
         np.random.seed(seed)
-        if self.mode == 'train' or self.mode == 'val':
+        # if self.mode == 'train' or self.mode == 'val':
+        if self.mode == 'train':
             np.random.shuffle(self.file_paths)
 
-        # Handle mode-specific file selection
-        split_index = int(len(self.file_paths) * split_ratio)
-        if self.mode == 'train':
-            self.file_paths = self.file_paths[:split_index]
-        elif self.mode == 'val':
-            self.file_paths = self.file_paths[split_index:]
-        elif self.mode == 'test':
-            # Use all files for test
-            pass
-        else:
-            raise ValueError("Invalid mode. Use 'train', 'val', or 'test'.")
+        # # Handle mode-specific file selection
+        # split_index = int(len(self.file_paths) * split_ratio)
+        # if self.mode == 'train':
+        #     self.file_paths = self.file_paths[:split_index]
+        # elif self.mode == 'val':
+        #     self.file_paths = self.file_paths[split_index:]
+        # elif self.mode == 'test':
+        #     # Use all files for test
+        #     pass
+        # else:
+        #     raise ValueError("Invalid mode. Use 'train', 'val', or 'test'.")
 
         self.batch_size = batch_size
         self.shuffle = shuffle and mode == 'train'  # Shuffle only for train mode
@@ -88,7 +89,7 @@ class DataGenerator(tf.keras.utils.Sequence):
 
 
                 # Add file info for test mode
-                if self.mode == 'test':
+                if self.mode == 'val':
                     batch_info.append(file_path)
 
             except Exception as e:
@@ -98,7 +99,7 @@ class DataGenerator(tf.keras.utils.Sequence):
         x_batch = np.array(x_batch).reshape(-1, 1024, 3, 1)  # Shape: [batch_size, 1024, 3, 1]
         y_batch = np.array(y_batch)  # Shape: [batch_size, 1024, 1, 1]
 
-        if self.mode == 'test':
+        if self.mode == 'val':
             return x_batch, y_batch, batch_info
         else:
             return x_batch, y_batch
@@ -118,9 +119,9 @@ if __name__ == "__main__":
     seed = 42
 
     # 创建测试数据生成器 (不分割)
-    test_gen = DataGenerator(folders, root_dir, batch_size=32, shuffle=False, mode='test', seed=seed)
+    val_gen = DataGenerator(folders, root_dir, batch_size=32, shuffle=False, mode='val', seed=seed)
 
-    for x_batch, y_batch, info in test_gen:
+    for x_batch, y_batch, info in val_gen:
         print(f"Test batch: x shape {x_batch.shape}, y shape {y_batch.shape}")
         print(f"File info: {info[:5]}")  # Print first 5 file paths for this batch
 

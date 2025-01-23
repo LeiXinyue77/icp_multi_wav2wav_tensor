@@ -14,12 +14,12 @@ if __name__ == "__main__":
     print('fold_no = ', fold_no)
 
     # 定义文件夹和根目录
-    test_folders = ["folder1"]  # fold1 的测试数据文件夹
+    val_folders = ["folder1"]  # fold1 的测试数据文件夹
     root_dir = "data"
     batch_size = 32
 
     # 创建测试数据生成器
-    test_gen = DataGenerator(test_folders, root_dir, batch_size=batch_size, shuffle=False, mode='test')
+    val_gen = DataGenerator(val_folders, root_dir, batch_size=batch_size, shuffle=False, mode='test')
 
     # 构建模型
     myModel = unet()
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     infos = []  # 用于存储文件信息
     x_data = []
 
-    for x_batch, y_batch, batch_info in test_gen:
+    for x_batch, y_batch, batch_info in val_gen:
         # 批量预测当前 batch
         batch_pred = myModel.predict(x_batch, batch_size=batch_size, verbose=1)
         y_pred.append(batch_pred)  # 将当前批次预测结果添加到总预测列表

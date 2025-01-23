@@ -15,15 +15,16 @@ if __name__ == "__main__":
     print('fold_no = ', fold_no)
 
     # Initialize DataGenerator
-    folders = ["folder2", "folder3", "folder4", "folder5"]
+    train_folders = ["folder2", "folder3", "folder4", "folder5"]
+    val_folders = ["folder1"]
     root_dir = "data"
     batch_size = 32
 
-    # 创建训练数据生成器 (80%)
-    train_gen = DataGenerator(folders, root_dir, batch_size, shuffle=True, split_ratio=0.8, mode='train')
+    # 创建训练数据生成器
+    train_gen = DataGenerator(train_folders, root_dir, batch_size, shuffle=True, mode='train')
 
-    # 创建测试数据生成器 (20%)
-    val_gen = DataGenerator(folders, root_dir, batch_size, shuffle=False, split_ratio=0.8, mode='val')
+    # 创建测试数据生成器
+    val_gen = DataGenerator(val_folders, root_dir, batch_size, shuffle=False, mode='val')
 
     # Build and compile the model
     myModel = unet2()
