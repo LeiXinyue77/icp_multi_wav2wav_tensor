@@ -1,3 +1,4 @@
+import random
 import numpy as np
 import tensorflow as tf
 from matplotlib import pyplot as plt
@@ -22,8 +23,8 @@ class LossAndCheckpointLogger(Callback):
         logs = logs or {}
         current_loss = logs.get('loss', None)
         current_val_loss = logs.get('val_loss', None)
-
-        # 追加日志
+        #
+        # # 追加日志
         with open(self.log_file, "a") as file:
             file.write(f"{epoch + 1},{current_loss},{current_val_loss}\n")
 
@@ -44,17 +45,33 @@ class LossAndCheckpointLogger(Callback):
 
 
 
-def setup_gpu():
+def setup_gpu(seed=42):
+    """
+    设置 GPU 配置并确保随机种子一致性。
+
+    Args:
+        seed (int): 随机种子，默认值为 42。
+    """
+    # 固定随机种子
+    random.seed(seed)
+    np.random.seed(seed)
+    tf.random.set_seed(seed)
+
+    # 设置环境变量以确保操作的确定性
+    os.environ['TF_DETERMINISTIC_OPS'] = '1'
+
+    # GPU 配置
     gpus = tf.config.experimental.list_physical_devices('GPU')
     if gpus:
         try:
             for gpu in gpus:
-                tf.config.experimental.set_memory_growth(gpu, True)
+                tf.config.experimental.set_memory_growth(gpu, True)  # 动态分配显存
             print(f"Using GPU: {[gpu.name for gpu in gpus]}")
         except RuntimeError as e:
             print(f"GPU setup error: {e}")
     else:
         print("No GPU found. Using CPU.")
+
 
 
 def plot_signals(abp, ppg, ecg, icp, file_info, idx):

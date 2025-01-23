@@ -77,7 +77,7 @@ def unet2():
 
 
 if __name__ == "__main__":
-    model = multi_unet()
+    model = unet2()
     model.summary()
     print("Model created successfully.")
 

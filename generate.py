@@ -1,9 +1,6 @@
 import os
 import numpy as np
 import tensorflow as tf
-import matplotlib.pyplot as plt
-from tensorflow.python.ops.ragged.ragged_squeeze_op import squeeze
-
 from helpers import plot_signals
 
 

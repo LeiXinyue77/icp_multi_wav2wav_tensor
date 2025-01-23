@@ -6,6 +6,7 @@ from generate import DataGenerator
 from model.unet2 import unet2
 from helpers import setup_gpu
 
+
 if __name__ == "__main__":
     # 初始化 GPU 设置
     setup_gpu()

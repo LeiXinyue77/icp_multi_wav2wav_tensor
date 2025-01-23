@@ -1,6 +1,4 @@
-import datetime
 import os
-import numpy as np
 import tensorflow as tf
 from tensorflow.keras.callbacks import ModelCheckpoint
 from helpers import LossAndCheckpointLogger, setup_gpu
@@ -59,7 +57,7 @@ if __name__ == "__main__":
             validation_data=val_gen,
             epochs=150,
             verbose=1,
-            callbacks=[cp_callback, loss_logger]
+            callbacks=[cp_callback, loss_logger],
         )
     except Exception as e:
         print(f"Error during training: {e}")

@@ -1,10 +1,10 @@
 import os
 import scipy.io as io
 import numpy as np
-import matplotlib.pyplot as plt
 from generate import DataGenerator
 from model.unet import unet
 from helpers import setup_gpu
+
 
 if __name__ == "__main__":
     # 初始化 GPU 设置
@@ -35,7 +35,7 @@ if __name__ == "__main__":
 
     # 执行批量预测
     print("Starting batch prediction...")
-    y_pred = [] # 用于存储所有预测结果
+    y_pred = []  # 用于存储所有预测结果
     y_refer = []
     infos = []  # 用于存储文件信息
     x_data = []
