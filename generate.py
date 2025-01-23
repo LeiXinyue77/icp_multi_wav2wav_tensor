@@ -89,7 +89,7 @@ class DataGenerator(tf.keras.utils.Sequence):
 
 
                 # Add file info for test mode
-                if self.mode == 'val':
+                if self.mode == 'test':
                     batch_info.append(file_path)
 
             except Exception as e:
@@ -99,7 +99,7 @@ class DataGenerator(tf.keras.utils.Sequence):
         x_batch = np.array(x_batch).reshape(-1, 1024, 3, 1)  # Shape: [batch_size, 1024, 3, 1]
         y_batch = np.array(y_batch)  # Shape: [batch_size, 1024, 1, 1]
 
-        if self.mode == 'val':
+        if self.mode == 'test':
             return x_batch, y_batch, batch_info
         else:
             return x_batch, y_batch
