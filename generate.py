@@ -102,7 +102,7 @@ class DataGenerator(tf.keras.utils.Sequence):
         if self.mode == 'test':
             return x_batch, y_batch, batch_info
         else:
-            return x_batch, y_batch, batch_info
+            return x_batch, y_batch
 
     def on_epoch_end(self):
         """Shuffle data at the end of each epoch (only for train mode)."""
