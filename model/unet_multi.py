@@ -3,7 +3,7 @@ from keras.models import Model
 from keras.layers import Conv2D, Input, MaxPooling2D, Dropout, concatenate, UpSampling2D
 
 
-def unet2():
+def unet_multi():
     # 输入层：支持多通道信号输入
     inputs = Input(shape=[1024, 3, 1])  # 时间步长为 1024，信号通道数为 3，单通道数据
 
@@ -77,7 +77,7 @@ def unet2():
 
 
 if __name__ == "__main__":
-    model = unet2()
+    model = unet_multi()
     model.summary()
     print("Model created successfully.")
 

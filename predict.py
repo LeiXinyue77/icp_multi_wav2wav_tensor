@@ -3,8 +3,7 @@ import scipy.io as io
 import numpy as np
 from generate import DataGenerator
 from model.unet import unet
-from helpers import setup_gpu
-
+from helpers import setup_gpu, get_timestamp
 
 if __name__ == "__main__":
     # 初始化 GPU 设置
@@ -14,18 +13,23 @@ if __name__ == "__main__":
     print('fold_no = ', fold_no)
 
     # 定义文件夹和根目录
-    val_folders = ["folder1"]  # fold1 的测试数据文件夹
+    test_folders = ["folder1"]  # fold1 的测试数据文件夹
     root_dir = "data"
     batch_size = 32
 
     # 创建测试数据生成器
-    val_gen = DataGenerator(val_folders, root_dir, batch_size=batch_size, shuffle=False, mode='test')
+    test_gen = DataGenerator(folders=test_folders, root_dir=root_dir, batch_size=batch_size,
+                            shuffle=False, split_ratio=0.8, mode='test', seed=42,
+                            normalize="local", fold_no=fold_no)
 
     # 构建模型
     myModel = unet()
+    timestamp = get_timestamp()
+    model_name = "unet"
 
     # 加载训练好的模型权重
-    checkpoint_save_path = "./20250122_checkpoint5_1/unet_icp.ckpt"
+    checkpoint_save_path = (f"save_model/{timestamp}_{model_name}_checkpoint5_{fold_no}/"
+                            f"{{epoch:03d}}/{model_name}.ckpt")
     if os.path.exists(checkpoint_save_path + '.index'):
         print('-------------load the model-----------------')
         myModel.load_weights(checkpoint_save_path)
@@ -35,12 +39,12 @@ if __name__ == "__main__":
 
     # 执行批量预测
     print("Starting batch prediction...")
-    y_pred = []  # 用于存储所有预测结果
+    y_pred = [] # 用于存储所有预测结果
     y_refer = []
     infos = []  # 用于存储文件信息
     x_data = []
 
-    for x_batch, y_batch, batch_info in val_gen:
+    for x_batch, y_batch, batch_info in test_gen:
         # 批量预测当前 batch
         batch_pred = myModel.predict(x_batch, batch_size=batch_size, verbose=1)
         y_pred.append(batch_pred)  # 将当前批次预测结果添加到总预测列表
@@ -58,20 +62,21 @@ if __name__ == "__main__":
     x_data = np.concatenate(x_data, axis=0)
     x_data = x_data.reshape(x_data.shape[0], x_data.shape[1])
 
+
     # 保存预测结果为 MAT 文件
-    pred_icp_file = "20250122_pred_icp_1.mat"
+    pred_icp_file = f"{timestamp}_pred_icp_1.mat"
     io.savemat(pred_icp_file, {'pred_icp_1': y_pred})
     print(f"saved to {pred_icp_file}")
 
-    refer_icp_file = "20250122_refer_icp_1.mat"
+    refer_icp_file = f"{timestamp}_refer_icp_1.mat"
     io.savemat(refer_icp_file, {'refer_icp_1': y_refer})
     print(f"saved to {refer_icp_file}")
 
-    abp_mat_file = "20250122_abp_1.mat"
+    abp_mat_file = f"{timestamp}_abp_1.mat"
     io.savemat(abp_mat_file, {'abp_1': x_data})
     print(f"saved to {abp_mat_file}")
 
-    info_mat_file = "20250122_info_1.mat"
+    info_mat_file = f"{timestamp}_info_1.mat"
     io.savemat(info_mat_file, {'info_1': infos})
     print(f"saved to {info_mat_file}")
 

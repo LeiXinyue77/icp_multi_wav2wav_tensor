@@ -1,6 +1,7 @@
 import scipy.io as io
 import numpy as np
 import matplotlib.pyplot as plt
+from helpers import get_timestamp
 
 
 def plot_results(refer_icp, pred_icp, abp, ppg, ecg, info, idx):
@@ -55,40 +56,42 @@ def plot_results(refer_icp, pred_icp, abp, ppg, ecg, info, idx):
 
 
 if __name__ == "__main__":
-    pred_icp_file = "20250123_pred_icp_1.mat"
+    timestamp = get_timestamp()
+
+    pred_icp_file = f"{timestamp}_pred_icp_1.mat"
     data = io.loadmat(pred_icp_file)
     pred_icps = data['pred_icp_1']
 
-    refer_icp_file = "20250123_refer_icp_1.mat"
+    refer_icp_file = f"{timestamp}_refer_icp_1.mat"
     data = io.loadmat(refer_icp_file)
     refer_icps = data['refer_icp_1']
 
-    abp_mat_file = "20250123_abp_1.mat"
+    abp_mat_file = f"{timestamp}_abp_1.mat"
     data = io.loadmat(abp_mat_file)
     abps = data['abp_1']
 
-    ppg_mat_file = "20250123_ppg_1.mat"
+    ppg_mat_file = f"{timestamp}_ppg_1.mat"
     data = io.loadmat(ppg_mat_file)
     ppgs = data['ppg_1']
 
-    ecg_mat_file = "20250123_ecg_1.mat"
+    ecg_mat_file = f"{timestamp}_ecg_1.mat"
     data = io.loadmat(ecg_mat_file)
     ecgs = data['ecg_1']
 
-    info_mat_file = "20250123_info_1.mat"
+    info_mat_file = f"{timestamp}_info_1.mat"
     data = io.loadmat(info_mat_file)
     infos = data['info_1']
 
     # 遍历测试数据并绘制前 5 张图像
     max_plots = 5
     for i in range(min(len(infos), max_plots)):  # 限制最多绘制 max_plots 张图像
-        refer_icp = refer_icps[i+20000]
-        pred_icp = pred_icps[i+20000]
-        abp = abps[i+20000]
-        ppg = ppgs[i+20000]
-        ecg = ecgs[i+20000]
+        refer_icp = refer_icps[i+1000]
+        pred_icp = pred_icps[i+1000]
+        abp = abps[i+1000]
+        ppg = ppgs[i+1000]
+        ecg = ecgs[i+1000]
         # ppg = np.zeros_like(abp)  # 使用占位符数据模拟 PPG（可替换为实际数据）
         # ecg = np.zeros_like(abp)  # 使用占位符数据模拟 ECG（可替换为实际数据）
-        plot_results(refer_icp, pred_icp, abp, ppg, ecg, infos[i+20000], i+20000)
+        plot_results(refer_icp, pred_icp, abp, ppg, ecg, infos[i+1000], i+1000)
 
 

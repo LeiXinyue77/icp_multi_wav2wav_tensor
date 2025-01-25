@@ -1,10 +1,9 @@
 import os
 import scipy.io as io
 import numpy as np
-import matplotlib.pyplot as plt
 from generate import DataGenerator
-from model.unet2 import unet2
-from helpers import setup_gpu
+from model.unet_multi import unet_multi
+from helpers import setup_gpu, get_timestamp
 
 
 if __name__ == "__main__":
@@ -17,16 +16,22 @@ if __name__ == "__main__":
     # 定义文件夹和根目录
     test_folders = ["folder1"]  # fold1 的测试数据文件夹
     root_dir = "data"
-    batch_size = 32
+    batch_size = 256
 
     # 创建测试数据生成器
-    test_gen = DataGenerator(test_folders, root_dir, batch_size=batch_size, shuffle=False, mode='test')
+    # 创建测试数据生成器
+    test_gen = DataGenerator(folders=test_folders, root_dir=root_dir, batch_size=batch_size,
+                            shuffle=False, split_ratio=0.8, mode='test', seed=42,
+                            normalize="local", fold_no=fold_no)
 
     # 构建模型
-    myModel = unet2()
+    myModel = unet_multi()
+    
+    timestamp = get_timestamp()
+    model_name = "unet_multi"
 
-    # 加载训练好的模型权重
-    checkpoint_save_path = "./20250123_unet2_checkpoint5_1/unet2_icp.ckpt"
+    checkpoint_save_path = (f"save_model/{timestamp}_{model_name}_checkpoint5_{fold_no}/"
+                            f"{{epoch:03d}}/{model_name}.ckpt")
     if os.path.exists(checkpoint_save_path + '.index'):
         print('-------------load the model-----------------')
         myModel.load_weights(checkpoint_save_path)
@@ -72,27 +77,27 @@ if __name__ == "__main__":
     ecg_data = ecg_data.reshape(ecg_data.shape[0], ecg_data.shape[1])
 
     # 保存预测结果为 MAT 文件
-    pred_icp_file = "20250123_pred_icp_1.mat"
+    pred_icp_file = f"{timestamp}_pred_icp_1.mat"
     io.savemat(pred_icp_file, {'pred_icp_1': y_pred})
     print(f"saved to {pred_icp_file}")
 
-    refer_icp_file = "20250123_refer_icp_1.mat"
+    refer_icp_file = f"{timestamp}_refer_icp_1.mat"
     io.savemat(refer_icp_file, {'refer_icp_1': y_refer})
     print(f"saved to {refer_icp_file}")
 
-    abp_mat_file = "20250123_abp_1.mat"
+    abp_mat_file = f"{timestamp}_abp_1.mat"
     io.savemat(abp_mat_file, {'abp_1': abp_data})
     print(f"saved to {abp_mat_file}")
 
-    ppg_mat_file = "20250123_ppg_1.mat"
+    ppg_mat_file = f"{timestamp}_ppg_1.mat"
     io.savemat(ppg_mat_file, {'ppg_1': ppg_data})
     print(f"saved to {ppg_mat_file}")
 
-    ecg_mat_file = "20250123_ecg_1.mat"
+    ecg_mat_file = f"{timestamp}_ecg_1.mat"
     io.savemat(ecg_mat_file, {'ecg_1': ecg_data})
     print(f"saved to {ecg_mat_file}")
 
-    info_mat_file = "20250123_info_1.mat"
+    info_mat_file = f"{timestamp}_info_1.mat"
     io.savemat(info_mat_file, {'info_1': infos})
     print(f"saved to {info_mat_file}")
 
