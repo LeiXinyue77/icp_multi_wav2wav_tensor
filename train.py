@@ -39,8 +39,10 @@ if __name__ == "__main__":
     # 文件路径
     checkpoint_save_path = (f"save_model/{timestamp}_{model_name}_checkpoint5_{fold_no}/"
                             f"{{epoch:03d}}/{model_name}.ckpt")
-    log_file = f"{timestamp}_{model_name}_save_loss_{fold_no}.csv"
-    best_epoch_file = f"{timestamp}_{model_name}_best_epoch_{fold_no}.csv"
+    best_model_save_path = (f"save_model/{timestamp}_{model_name}_checkpoint5_{fold_no}/"
+                            f"best_model/{model_name}.ckpt")
+    log_file = f"save_loss/{timestamp}_{model_name}_save_loss_{fold_no}.csv"
+    best_epoch_file = f"save_loss/{timestamp}_{model_name}_best_epoch_{fold_no}.csv"
 
     if os.path.exists(checkpoint_save_path + '.index'):
         print('-------------load the model-----------------')
@@ -51,6 +53,7 @@ if __name__ == "__main__":
                                         save_weights_only=True,
                                         save_best_only=True,
                                         checkpoint_freq=10,  # 每隔 10 个 epoch 保存一次模型
+                                        best_model_save_path=best_model_save_path,
                                         verbose=1)
 
     loss_logger = LossLogger(log_file, best_epoch_file)
@@ -65,6 +68,7 @@ if __name__ == "__main__":
     )
 
     # Plot the loss curve after training
-    plot_loss(history, fold_no, timestamp, model_name)
+    loss_curve_path = f'save_loss/{timestamp}_{model_name}_loss_{fold_no}.png'
+    plot_loss(history, save_path=loss_curve_path)
 
     print(f"Training for fold {fold_no} finished!")

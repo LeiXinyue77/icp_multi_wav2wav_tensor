@@ -9,9 +9,10 @@ import pandas as pd
 
 
 class CustomModelCheckpoint(ModelCheckpoint):
-    def __init__(self, *args, checkpoint_freq=10, **kwargs):
+    def __init__(self, *args, checkpoint_freq=10, best_model_save_path, **kwargs):
         super().__init__(*args, **kwargs)
         self.checkpoint_freq = checkpoint_freq
+        self.best_model_save_path = best_model_save_path
         self.best_val_loss = float('inf')  # 初始化最佳验证损失
         self.best_epoch = 0  # 初始化最佳 epoch
 
@@ -22,9 +23,8 @@ class CustomModelCheckpoint(ModelCheckpoint):
         if current_val_loss and current_val_loss < self.best_val_loss:
             self.best_val_loss = current_val_loss
             self.best_epoch = epoch + 1
-            # 保存最佳模型，文件名包含当前的 epoch 和 val_loss
-            best_checkpoint_path = self.filepath.format(epoch=self.best_epoch, val_loss=self.best_val_loss)
-            self.model.save_weights(best_checkpoint_path)
+            # 保存最佳模型
+            self.model.save_weights(self.best_model_save_path)
             print(f"Best model saved at epoch {self.best_epoch} with val_loss: {self.best_val_loss}")
 
         # 每隔 10 个 epoch 保存一次模型
@@ -169,15 +169,13 @@ def get_timestamp():
     return timestamp
 
 
-def plot_loss(history, fold_no, timestamp, model_name):
+def plot_loss(history, save_path):
     """
     绘制训练和验证的损失曲线，并保存为图片。
 
     Args:
     - history: 训练过程中返回的 history 对象
-    - fold_no: 当前训练的 fold 编号
-    - timestamp: 当前时间戳，用于文件命名
-    - model_name: 模型名称
+    - save_path: 保存路径
     """
     loss = history.history['loss']
     val_loss = history.history['val_loss']
@@ -192,5 +190,5 @@ def plot_loss(history, fold_no, timestamp, model_name):
     plt.legend()
 
     # 保存图像
-    plt.savefig(f'{timestamp}_{model_name}_loss_{fold_no}.png', dpi=600)
+    plt.savefig(save_path, dpi=600)
 

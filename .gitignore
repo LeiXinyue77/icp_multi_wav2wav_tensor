@@ -1,2 +1,5 @@
 /data
 /result
+/global_stats
+/save_loss
+/save_model
