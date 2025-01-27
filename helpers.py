@@ -9,10 +9,10 @@ import pandas as pd
 
 
 class CustomModelCheckpoint(ModelCheckpoint):
-    def __init__(self, *args, checkpoint_freq=10, best_model_save_path, **kwargs):
+    def __init__(self, *args, checkpoint_freq=10, checkpoint_save_path, **kwargs):
         super().__init__(*args, **kwargs)
         self.checkpoint_freq = checkpoint_freq
-        self.best_model_save_path = best_model_save_path
+        self.checkpoint_save_path = checkpoint_save_path
         self.best_val_loss = float('inf')  # 初始化最佳验证损失
         self.best_epoch = 0  # 初始化最佳 epoch
 
@@ -24,12 +24,12 @@ class CustomModelCheckpoint(ModelCheckpoint):
             self.best_val_loss = current_val_loss
             self.best_epoch = epoch + 1
             # 保存最佳模型
-            self.model.save_weights(self.best_model_save_path)
+            self.model.save_weights(self.filepath)
             print(f"Best model saved at epoch {self.best_epoch} with val_loss: {self.best_val_loss}")
 
         # 每隔 10 个 epoch 保存一次模型
         if (epoch + 1) % self.checkpoint_freq == 0:
-            checkpoint_path = self.filepath.format(epoch=epoch + 1)
+            checkpoint_path = self.checkpoint_save_path.format(epoch=epoch + 1)
             self.model.save_weights(checkpoint_path)
 
         # 调用父类的 on_epoch_end 方法来进行常规处理

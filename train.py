@@ -49,11 +49,11 @@ if __name__ == "__main__":
         myModel.load_weights(checkpoint_save_path)
 
     # Callbacks
-    cp_callback = CustomModelCheckpoint(filepath=checkpoint_save_path,
+    cp_callback = CustomModelCheckpoint(filepath=best_model_save_path,
                                         save_weights_only=True,
                                         save_best_only=True,
                                         checkpoint_freq=10,  # 每隔 10 个 epoch 保存一次模型
-                                        best_model_save_path=best_model_save_path,
+                                        checkpoint_save_path=checkpoint_save_path,
                                         verbose=1)
 
     loss_logger = LossLogger(log_file, best_epoch_file)
