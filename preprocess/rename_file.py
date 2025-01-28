@@ -41,4 +41,5 @@ def rename_and_organize_files(directory):
         print(f"Moved and Renamed: {curr_file[0]} -> {new_name} in folder {curr_file[1]}")
 
 
-rename_and_organize_files(directory="data/folder1/p061877")
+rename_and_organize_files(directory="../data/folder1/p061877")
+print("===================================== finished !!! ================================================")
