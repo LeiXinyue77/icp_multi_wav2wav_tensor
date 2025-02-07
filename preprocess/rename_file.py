@@ -21,7 +21,7 @@ def rename_and_organize_files(directory):
     file_info.sort(key=lambda x: x[3])  # 按采样点数排序
 
     # 为文件重新命名并组织到病人标识的文件夹中
-    for i in range(1, len(file_info)):
+    for i in range(0, len(file_info)):
         curr_file = file_info[i]
 
         # 根据新的命名规则生成文件名
@@ -41,5 +41,6 @@ def rename_and_organize_files(directory):
         print(f"Moved and Renamed: {curr_file[0]} -> {new_name} in folder {curr_file[1]}")
 
 
-rename_and_organize_files(directory="../data/folder1/p061877")
-print("===================================== finished !!! ================================================")
+if __name__ == "__main__":
+    rename_and_organize_files(directory="../data/folder1/p066727")
+    print("===================================== finished !!! ================================================")

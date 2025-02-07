@@ -1,6 +1,5 @@
 import os
 import tensorflow as tf
-from tensorflow.keras.callbacks import ModelCheckpoint
 from helpers import LossLogger, setup_gpu, get_timestamp, CustomModelCheckpoint, plot_loss
 from model.unet import unet
 from model.unet_multi import unet_multi
@@ -21,21 +20,21 @@ if __name__ == "__main__":
 
     train_gen = DataGenerator(folders=folders, root_dir=root_dir, batch_size=batch_size,
                               shuffle=True, split_ratio=0.8, mode='train', seed=42,
-                              normalize="local", fold_no=fold_no)
+                              normalize="global", fold_no=fold_no)
 
     val_gen = DataGenerator(folders=folders, root_dir=root_dir, batch_size=batch_size,
                             shuffle=False, split_ratio=0.8, mode='val', seed=42,
-                            normalize="local", fold_no=fold_no)
+                            normalize="global", fold_no=fold_no)
 
     # Build and compile the model
-    myModel = unet()
+    myModel = unet_multi()
     myModel.summary()
     myModel.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=1e-4),
                     loss=tf.keras.losses.mean_absolute_error,
                     metrics=tf.keras.metrics.RootMeanSquaredError())
 
     timestamp = get_timestamp()
-    model_name = "unet"
+    model_name = "unet_multi"
     # 文件路径
     checkpoint_save_path = (f"save_model/{timestamp}_{model_name}_checkpoint5_{fold_no}/"
                             f"{{epoch:03d}}/{model_name}.ckpt")

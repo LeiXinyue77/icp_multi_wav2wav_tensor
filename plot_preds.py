@@ -1,12 +1,13 @@
+import os
 import scipy.io as io
 import numpy as np
 import matplotlib.pyplot as plt
 from helpers import get_timestamp
 
 
-def plot_results(refer_icp, pred_icp, abp, ppg, ecg, info, idx):
+def plot_results(refer_icp, pred_icp, abp, ppg, ecg, info, idx, save_dir):
     """
-    绘制结果图，包括参考ICP、预测ICP、ABP、PPG、ECG信号。
+    绘制结果图，包括参考ICP、预测ICP、ABP、PPG、ECG信号，并保存。
     """
     time = np.arange(0, refer_icp.shape[0] * 0.008, 0.008)
 
@@ -50,13 +51,52 @@ def plot_results(refer_icp, pred_icp, abp, ppg, ecg, info, idx):
     plt.grid()
 
     plt.tight_layout()
-    plt.savefig(f"result_plot_{idx}.png", dpi=300)
+
+    # 使用 info 作为文件名，提取路径并格式化为合法文件名
+    filename = info  # 获取 info 中的路径
+    # 从路径中提取所需的部分并构建文件名
+    filename = filename.strip().replace('/', '_').replace(' ', '')  # 去除空格、替换斜杠为下划线
+
+    # 去掉文件扩展名（如果有的话）
+    filename = filename.split('.')[0]  # 以 '.' 为分隔符，保留 '.' 前的部分
+
+    filename = f"{filename}.png"  # 添加 .png 扩展名
+
+    # 保存文件到指定文件夹
+    plt.savefig(os.path.join(save_dir, filename), dpi=300)
     plt.close()  # 保存后关闭图像
     print(f"Plot saved for sample {idx} - Info: {info}")
 
 
+def save_plots_in_batches(refer_icps, pred_icps, abps, ppgs, ecgs, infos, batch_size=100):
+    """
+    遍历所有数据并将图像按批次保存，每批次保存 100 张图像到一个子文件夹。
+    """
+    total_samples = len(infos)
+
+    for i in range(total_samples):
+        # 每 100 个样本创建一个新的文件夹
+        batch_num = i // batch_size + 1
+        save_dir = f"save_png/batch_{batch_num}"
+
+        # 创建目录（如果不存在）
+        if not os.path.exists(save_dir):
+            os.makedirs(save_dir)
+
+        # 获取当前样本数据
+        refer_icp = refer_icps[i]
+        pred_icp = pred_icps[i]
+        abp = abps[i]
+        ppg = ppgs[i]
+        ecg = ecgs[i]
+
+        # 绘制并保存结果图
+        plot_results(refer_icp, pred_icp, abp, ppg, ecg, infos[i], i, save_dir)
+
+
 if __name__ == "__main__":
-    timestamp = get_timestamp()
+    # timestamp = get_timestamp()
+    timestamp = "20250201"
 
     pred_icp_file = f"{timestamp}_pred_icp_1.mat"
     data = io.loadmat(pred_icp_file)
@@ -82,16 +122,5 @@ if __name__ == "__main__":
     data = io.loadmat(info_mat_file)
     infos = data['info_1']
 
-    # 遍历测试数据并绘制前 5 张图像
-    max_plots = 5
-    for i in range(min(len(infos), max_plots)):  # 限制最多绘制 max_plots 张图像
-        refer_icp = refer_icps[i+1000]
-        pred_icp = pred_icps[i+1000]
-        abp = abps[i+1000]
-        ppg = ppgs[i+1000]
-        ecg = ecgs[i+1000]
-        # ppg = np.zeros_like(abp)  # 使用占位符数据模拟 PPG（可替换为实际数据）
-        # ecg = np.zeros_like(abp)  # 使用占位符数据模拟 ECG（可替换为实际数据）
-        plot_results(refer_icp, pred_icp, abp, ppg, ecg, infos[i+1000], i+1000)
-
-
+    # 每 100 张图像保存到一个新的文件夹
+    save_plots_in_batches(refer_icps, pred_icps, abps, ppgs, ecgs, infos, batch_size=100)

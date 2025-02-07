@@ -1,3 +1,4 @@
+import numpy as np
 from keras.models import Model
 from keras.layers import Conv2D, Input, MaxPooling2D, Dropout, concatenate, UpSampling2D
 
@@ -92,3 +93,20 @@ def unet():
     model = Model(inputs=inputs, outputs=conv10)
 
     return model
+
+
+if __name__ == "__main__":
+    model = unet()
+    model.summary()
+    print("Model created successfully.")
+
+    # 测试输入输出
+    # 创建测试输入张量，模拟批量输入
+    test_input = np.random.rand(16, 1024, 1, 1).astype(np.float32)  # batch_size=4, 时间步长=1024, 信号通道=3, 空间维度=1
+
+    # 将输入张量传入模型
+    test_output = model.predict(test_input)
+
+    # 打印输入和输出的形状
+    print(f"Test input shape: {test_input.shape}")
+    print(f"Test output shape: {test_output.shape}")

@@ -22,16 +22,18 @@ if __name__ == "__main__":
     # 创建测试数据生成器
     test_gen = DataGenerator(folders=test_folders, root_dir=root_dir, batch_size=batch_size,
                             shuffle=False, split_ratio=0.8, mode='test', seed=42,
-                            normalize="local", fold_no=fold_no)
+                            normalize="global", fold_no=fold_no)
 
     # 构建模型
     myModel = unet_multi()
     
-    timestamp = get_timestamp()
+    # timestamp = get_timestamp()
+    timestamp = "20250201"
     model_name = "unet_multi"
 
-    checkpoint_save_path = (f"save_model/{timestamp}_{model_name}_checkpoint5_{fold_no}/"
-                            f"{{epoch:03d}}/{model_name}.ckpt")
+    # checkpoint_save_path = (f"save_model/{timestamp}_{model_name}_checkpoint5_{fold_no}/"
+    #                         f"{{epoch:03d}}/{model_name}.ckpt")
+    checkpoint_save_path = "save_model/20250201_unet_multi_checkpoint5_1/best_model/unet_multi.ckpt"
     if os.path.exists(checkpoint_save_path + '.index'):
         print('-------------load the model-----------------')
         myModel.load_weights(checkpoint_save_path)
@@ -41,7 +43,7 @@ if __name__ == "__main__":
 
     # 执行批量预测
     print("Starting batch prediction...")
-    y_pred = [] # 用于存储所有预测结果
+    y_pred = []  # 用于存储所有预测结果
     y_refer = []
     infos = []  # 用于存储文件信息
 

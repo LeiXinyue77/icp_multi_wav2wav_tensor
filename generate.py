@@ -6,7 +6,7 @@ from helpers import plot_signals
 
 class DataGenerator(tf.keras.utils.Sequence):
     def __init__(self, folders, root_dir, batch_size=32, shuffle=True, split_ratio=0.8, mode='train', seed=42,
-                 normalize = "local", fold_no=1):
+                 normalize="local", fold_no=1):
         """
         Args:
             folders (list): List of folders containing the `.npy` files.
@@ -85,18 +85,18 @@ class DataGenerator(tf.keras.utils.Sequence):
                     normalized_data = (npy_data - npy_data_min) / npy_data_range
 
                 # # Append ICP (y) and ABP (x)
-                x_batch.append(normalized_data[:, 1].reshape(-1, 1, 1))  # ABP
-                y_batch.append(normalized_data[:, 0].reshape(-1, 1, 1))  # ICP
+                # x_batch.append(normalized_data[:, 1].reshape(-1, 1, 1))  # ABP
+                # y_batch.append(normalized_data[:, 0].reshape(-1, 1, 1))  # ICP
 
                 # Combine ABP, PPG, and ECG into multi-channel input
-                # multi_channel_input = np.stack([
-                #     normalized_data[:, 1],  # ABP
-                #     normalized_data[:, 2],  # PPG
-                #     normalized_data[:, 3]  # ECG
-                # ], axis=-1)  # Shape: [1024, 3]
-                #
-                # x_batch.append(multi_channel_input)  # Add multi-channel input
-                # y_batch.append(normalized_data[:, 0].reshape(-1, 1, 1))  # ICP as targe
+                multi_channel_input = np.stack([
+                    normalized_data[:, 1],  # ABP
+                    normalized_data[:, 2],  # PPG
+                    normalized_data[:, 3]  # ECG
+                ], axis=-1)  # Shape: [1024, 3]
+
+                x_batch.append(multi_channel_input)  # Add multi-channel input
+                y_batch.append(normalized_data[:, 0].reshape(-1, 1, 1))  # ICP as targe
 
 
                 # Add file info for test mode

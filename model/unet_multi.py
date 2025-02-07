@@ -83,7 +83,7 @@ if __name__ == "__main__":
 
     # 测试输入输出
     # 创建测试输入张量，模拟批量输入
-    test_input = np.random.rand(4, 1024, 3, 1).astype(np.float32)  # batch_size=4, 时间步长=1024, 信号通道=3, 空间维度=1
+    test_input = np.random.rand(16, 1024, 3, 1).astype(np.float32)  # batch_size=4, 时间步长=1024, 信号通道=3, 空间维度=1
 
     # 将输入张量传入模型
     test_output = model.predict(test_input)
