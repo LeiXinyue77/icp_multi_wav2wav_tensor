@@ -60,38 +60,6 @@ def delete_files_from_csv(csv_files):
     return deleted_files, failed_files
 
 
-# 指定文件路径
-# file_to_delete = "../data/folder1/p061877/3320699_0089/8296058_1_3320699_0089_43.npy"
-# file_to_delete = "../data/folder1/p061877/3320699_0052/4200440_42_3320699_0052_61.npy"
-
-
-# file_to_delete = "../data/folder2/p086300/3721988_0001/1183980_1_3721988_0001_46.npy"
-
-
-# file_to_delete = "../data/folder3/p068564/3951979_0023/659255_1_3951979_0023_46.npy"
-
-
-# file_to_delete = "../data/folder4/p079358/3781713_0009/1423962_81_3781713_0009_40.npy"
-# file_to_delete = "../data/folder4/p045703/3825747_0005/4246649_1_3825747_0005_45.npy"
-# file_to_delete = "../data/folder4/p045703/3825747_0023/23344_1_3825747_0023_42.npy"
-# file_to_delete = "../data/folder4/p079358/3781713_0004/2333322_1_3781713_0004_43.npy"
-# file_to_delete = "../data/folder4/p045703/3825747_0005/4247524_2_3825747_0005_44.npy"
-# file_to_delete = "../data/folder4/p045703/3662063_0060/142509_1_3662063_0060_37.npy"
-# file_to_delete = "../data/folder4/p045703/3662063_0102/4629429_1_3662063_0102_40.npy"
-# file_to_delete = "../data/folder4/p045703/3825747_0004/1943993_1_3825747_0004_39.npy"
-# file_to_delete = "../data/folder4/p045703/3825747_0021/457559_40_3825747_0021_159.npy"
-
-
-# file_to_delete = "../data/folder5/p043571/3841089_0010/305021_1_3841089_0010_42.npy"
-# file_to_delete = "../data/folder5/p027162/3363366_0024/589405_1_3363366_0024_46.npy"
-# file_to_delete = "../data/folder5/p043571/3665139_0013/168887_1_3665139_0013_41.npy"
-# file_to_delete = "../data/folder5/p043571/3665139_0024/1291178_1_3665139_0024_35.npy"
-# file_to_delete = "../data/folder5/p043571/3841089_0014/3319608_71_3841089_0014_45.npy"
-# file_to_delete = "../data/folder5/p043571/3841089_0017/1356853_1_3841089_0017_41.npy"
-# file_to_delete = "../data/folder5/p027162/3699470_0052/0_1_3699470_0052_54.npy"
-
-
-
 def delete_all_files_and_folders(path):
     """
     删除指定路径下的所有文件和文件夹
@@ -115,23 +83,20 @@ def delete_all_files_and_folders(path):
     else:
         print(f"路径不存在: {path}")
 
-# 使用方法
-
-
-
 
 if __name__ == "__main__":
     # 从 CSV 文件中读取要删除的文件
-    # csv_files = ["outlier_icp_fold1.csv", "outlier_icp_fold2.csv", "outlier_icp_fold3.csv",
-    #              "outlier_icp_fold4.csv", "outlier_icp_fold5.csv"]
+    # csv_files = ["outliers_icp_folder1.csv", "outliers_icp_folder2.csv", "outliers_icp_folder3.csv",
+    #              "outliers_icp_folder4.csv", "outliers_icp_folder5.csv"]
     #
     # deleted_files, failed_files = delete_files_from_csv(csv_files)
 
     # 删除指定文件
-    # file_to_delete = "../data/folder1/p061877/3320699_0089/8296058_1_3320699_0089_43.npy"
-    # delete_file(file_to_delete)
+    file_to_delete = "../data-v1/folder1/p061877/3320699_0089/8296058_1_3320699_0089_43.npy"
+    delete_file(file_to_delete)
 
-    delete_all_files_and_folders("../save_png")
+    # delete_all_files_and_folders("../data")
+    # delete_all_files_and_folders("../data-folder1-record")
 
 
     print("===================================== finished !!! ================================================")
