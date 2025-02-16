@@ -2,38 +2,33 @@ import os
 import scipy.io as io
 import numpy as np
 from generate import DataGenerator
+from model.idv_net import IVD_Net_asym
 from model.unet_multi import unet_multi
-from helpers import setup_gpu, get_timestamp
+from helpers import setup_gpu
 
 
 if __name__ == "__main__":
     # 初始化 GPU 设置
     setup_gpu()
 
-    fold_no = 1
+    fold_no = 2
     print('fold_no = ', fold_no)
+    test_folders = [f"folder{fold_no}"]  # fold1 的测试数据文件夹
+    root_dir = "data-v1"
 
-    # 定义文件夹和根目录
-    test_folders = ["folder1"]  # fold1 的测试数据文件夹
-    root_dir = "data"
     batch_size = 256
-
-    # 创建测试数据生成器
     # 创建测试数据生成器
     test_gen = DataGenerator(folders=test_folders, root_dir=root_dir, batch_size=batch_size,
                             shuffle=False, split_ratio=0.8, mode='test', seed=42,
-                            normalize="global", fold_no=fold_no)
+                            normalize="local", fold_no=fold_no)
 
     # 构建模型
-    myModel = unet_multi()
-    
-    # timestamp = get_timestamp()
-    timestamp = "20250201"
-    model_name = "unet_multi"
+    myModel = IVD_Net_asym(output_nc=1, ngf=8)
+    model_name = "IVD_Net_asym"
 
-    # checkpoint_save_path = (f"save_model/{timestamp}_{model_name}_checkpoint5_{fold_no}/"
-    #                         f"{{epoch:03d}}/{model_name}.ckpt")
-    checkpoint_save_path = "save_model/20250201_unet_multi_checkpoint5_1/best_model/unet_multi.ckpt"
+    base_root = "results/20250209_IDV_Net_asym_multi3_fold2"
+    checkpoint_save_path = f"{base_root}/save_model_5_{fold_no}/" \
+                           f"{model_name}_checkpoint5_{fold_no}/best_model/{model_name}.ckpt"
     if os.path.exists(checkpoint_save_path + '.index'):
         print('-------------load the model-----------------')
         myModel.load_weights(checkpoint_save_path)
@@ -79,28 +74,38 @@ if __name__ == "__main__":
     ecg_data = ecg_data.reshape(ecg_data.shape[0], ecg_data.shape[1])
 
     # 保存预测结果为 MAT 文件
-    pred_icp_file = f"{timestamp}_pred_icp_1.mat"
-    io.savemat(pred_icp_file, {'pred_icp_1': y_pred})
+    save_path = f"{base_root}/save_mat_5_{fold_no}"
+
+    pred_icp_file = f"{save_path}/pred_icp_5_{fold_no}.mat"
+    io.savemat(pred_icp_file, {'pred_icp': y_pred})
     print(f"saved to {pred_icp_file}")
 
-    refer_icp_file = f"{timestamp}_refer_icp_1.mat"
-    io.savemat(refer_icp_file, {'refer_icp_1': y_refer})
+    refer_icp_file = f"{save_path}/refer_icp_5_{fold_no}.mat"
+    io.savemat(refer_icp_file, {'refer_icp': y_refer})
     print(f"saved to {refer_icp_file}")
 
-    abp_mat_file = f"{timestamp}_abp_1.mat"
-    io.savemat(abp_mat_file, {'abp_1': abp_data})
+    abp_mat_file = f"{save_path}/abp_5_{fold_no}.mat"
+    io.savemat(abp_mat_file, {'abp': abp_data})
     print(f"saved to {abp_mat_file}")
 
-    ppg_mat_file = f"{timestamp}_ppg_1.mat"
-    io.savemat(ppg_mat_file, {'ppg_1': ppg_data})
+    ppg_mat_file = f"{save_path}/ppg_5_{fold_no}.mat"
+    io.savemat(ppg_mat_file, {'ppg': ppg_data})
     print(f"saved to {ppg_mat_file}")
 
-    ecg_mat_file = f"{timestamp}_ecg_1.mat"
-    io.savemat(ecg_mat_file, {'ecg_1': ecg_data})
+    ecg_mat_file = f"{save_path}/ecg_5_{fold_no}.mat"
+    io.savemat(ecg_mat_file, {'ecg': ecg_data})
     print(f"saved to {ecg_mat_file}")
 
-    info_mat_file = f"{timestamp}_info_1.mat"
-    io.savemat(info_mat_file, {'info_1': infos})
+    info_mat_file = f"{save_path}/info_5_{fold_no}.mat"
+    io.savemat(info_mat_file, {'info': infos})
     print(f"saved to {info_mat_file}")
+
+
+
+
+
+
+
+
 
 

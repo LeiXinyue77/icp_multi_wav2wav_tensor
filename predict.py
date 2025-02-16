@@ -64,20 +64,20 @@ if __name__ == "__main__":
 
 
     # 保存预测结果为 MAT 文件
-    pred_icp_file = f"{timestamp}_pred_icp_1.mat"
-    io.savemat(pred_icp_file, {'pred_icp_1': y_pred})
+    pred_icp_file = f"pred_icp_5_{fold_no}.mat"
+    io.savemat(pred_icp_file, {'pred_icp': y_pred})
     print(f"saved to {pred_icp_file}")
 
-    refer_icp_file = f"{timestamp}_refer_icp_1.mat"
-    io.savemat(refer_icp_file, {'refer_icp_1': y_refer})
+    refer_icp_file = f"refer_icp_5_{fold_no}.mat"
+    io.savemat(refer_icp_file, {'refer_icp': y_refer})
     print(f"saved to {refer_icp_file}")
 
-    abp_mat_file = f"{timestamp}_abp_1.mat"
-    io.savemat(abp_mat_file, {'abp_1': x_data})
+    abp_mat_file = f"abp_5_{fold_no}.mat"
+    io.savemat(abp_mat_file, {'abp': x_data})
     print(f"saved to {abp_mat_file}")
 
-    info_mat_file = f"{timestamp}_info_1.mat"
-    io.savemat(info_mat_file, {'info_1': infos})
+    info_mat_file = f"info_5_{fold_no}.mat"
+    io.savemat(info_mat_file, {'info': infos})
     print(f"saved to {info_mat_file}")
 
 

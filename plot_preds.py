@@ -96,31 +96,37 @@ def save_plots_in_batches(refer_icps, pred_icps, abps, ppgs, ecgs, infos, batch_
 
 if __name__ == "__main__":
     # timestamp = get_timestamp()
-    timestamp = "20250201"
+    # timestamp = "20250209"
+    fold_no = 1
 
-    pred_icp_file = f"{timestamp}_pred_icp_1.mat"
+    pred_icp_file = f"pred_icp_5_{fold_no}.mat"
     data = io.loadmat(pred_icp_file)
-    pred_icps = data['pred_icp_1']
+    pred_icps = data['pred_icp']
 
-    refer_icp_file = f"{timestamp}_refer_icp_1.mat"
+    refer_icp_file = f"refer_icp_5_{fold_no}.mat"
     data = io.loadmat(refer_icp_file)
-    refer_icps = data['refer_icp_1']
+    refer_icps = data['refer_icp']
 
-    abp_mat_file = f"{timestamp}_abp_1.mat"
+    abp_mat_file = f"abp_5_{fold_no}.mat"
     data = io.loadmat(abp_mat_file)
-    abps = data['abp_1']
+    abps = data['abp']
 
-    ppg_mat_file = f"{timestamp}_ppg_1.mat"
+    ppg_mat_file = f"ppg_5_{fold_no}.mat"
     data = io.loadmat(ppg_mat_file)
-    ppgs = data['ppg_1']
+    ppgs = data['ppg']
 
-    ecg_mat_file = f"{timestamp}_ecg_1.mat"
+    ecg_mat_file = f"ecg_5_{fold_no}.mat"
     data = io.loadmat(ecg_mat_file)
-    ecgs = data['ecg_1']
+    ecgs = data['ecg']
 
-    info_mat_file = f"{timestamp}_info_1.mat"
+    info_mat_file = f"info_5_{fold_no}.mat"
     data = io.loadmat(info_mat_file)
-    infos = data['info_1']
+    infos = data['info']
 
     # 每 100 张图像保存到一个新的文件夹
-    save_plots_in_batches(refer_icps, pred_icps, abps, ppgs, ecgs, infos, batch_size=100)
+    # save_plots_in_batches(refer_icps, pred_icps, abps, ppgs, ecgs, infos, batch_size=100)
+    save_dir = "save_png"
+    for idx in range(len(pred_icps)):
+        plot_results(refer_icps[idx], pred_icps[idx], abps[idx], ppgs[idx], ecgs[idx], infos[idx], idx, save_dir)
+        print(f"{infos[idx]}")
+

@@ -156,7 +156,7 @@ def plot_signals(abp, ppg, ecg, icp, file_info, idx):
     plt.tight_layout()
     # plt.savefig(f"test_signal_plot_{idx}.png", dpi=300)
     plt.show()
-    print(f"Plot saved for sample {idx} - File info: {file_info}")
+    # print(f"Plot saved for sample {idx} - File info: {file_info}")
 
 
 

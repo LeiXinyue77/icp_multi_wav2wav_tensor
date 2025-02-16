@@ -92,11 +92,12 @@ class DataGenerator(tf.keras.utils.Sequence):
                 multi_channel_input = np.stack([
                     normalized_data[:, 1],  # ABP
                     normalized_data[:, 2],  # PPG
-                    normalized_data[:, 3]  # ECG
+                    # normalized_data[:, 3]  # ECG
                 ], axis=-1)  # Shape: [1024, 3]
 
                 x_batch.append(multi_channel_input)  # Add multi-channel input
-                y_batch.append(normalized_data[:, 0].reshape(-1, 1, 1))  # ICP as targe
+                # y_batch.append(normalized_data[:, 0].reshape(-1, 1, 1))  # ICP as targe
+                y_batch.append(normalized_data[:, 0].reshape(-1, 1))  # ICP as targe
 
 
                 # Add file info for test mode
@@ -124,24 +125,26 @@ class DataGenerator(tf.keras.utils.Sequence):
 
 # Example usage
 if __name__ == "__main__":
-    folders = ["folder1"]
-    root_dir = "data"
+    # folders = ["folder1"]
+    folders = ["folder2", "folder3", "folder4", "folder5"]
+    root_dir = "data-v1"
 
     # 固定随机种子，确保一致性
     seed = 42
     # 创建训练数据生成器 (不分割)
-    test_gen = DataGenerator(folders, root_dir, batch_size=32, shuffle=False, mode='test', seed=seed,
-                              normalize="global", fold_no=1)
+    train_gen = DataGenerator(folders, root_dir, batch_size=256, shuffle=False, mode='train', seed=seed,
+                              normalize="local", fold_no=1)
 
-    for x_batch, y_batch, info in test_gen:
+    for x_batch, y_batch in train_gen:
         print(f"Test batch: x shape {x_batch.shape}, y shape {y_batch.shape}")
-        print(f"File info: {info[:5]}")  # Print first 5 file paths for this batch
+        # print(f"File info: {info[:5]}")  # Print first 5 file paths for this batch
 
-        for i in range(min(len(x_batch), 10)):  # 绘制前 5 个样本
-            abp = x_batch[i, :, 0, 0]
-            ppg = x_batch[i, :, 1, 0]
-            ecg = x_batch[i, :, 2, 0]
+        for i in range(len(x_batch)):  # 绘制前 5 个样本
+            abp = x_batch[i, :, 0]
+            ppg = x_batch[i, :, 1]
+            ecg = x_batch[i, :, 2]
             icp = y_batch[i]
-            icp = np.squeeze(icp)
-            plot_signals(abp, ppg, ecg, icp, info[i], i)
-        break
+            # icp = np.squeeze(icp)
+            # plot_signals(abp, ppg, ecg, icp, info[i], i)
+            # print(f"info: {info}")
+
